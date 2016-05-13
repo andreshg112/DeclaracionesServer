@@ -11,12 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DeclaracionesServer.Models;
 using DeclaracionesServer.Services;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace DeclaracionesServer
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
@@ -31,6 +32,7 @@ namespace DeclaracionesServer
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            Configuration["Data:Connection:ConnectionString"] = $@"Data Source={appEnv.ApplicationBasePath}/BaseDeDatos.db";
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -38,11 +40,20 @@ namespace DeclaracionesServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
             // Add framework services.
             services.AddEntityFramework()
-                .AddSqlServer()
+                .AddSqlite()
                 .AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    options.UseSqlite(Configuration["Data:DefaultConnection:ConnectionString"]))
+                .AddSqlite()
+                .AddDbContext<DeclaracionDbContext>(options =>
+                    options.UseSqlite(Configuration["Data:Connection:ConnectionString"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -58,6 +69,7 @@ namespace DeclaracionesServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseCors("MyPolicy");
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
