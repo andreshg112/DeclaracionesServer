@@ -23,7 +23,7 @@ namespace DeclaracionesServer.Controllers
         [HttpGet]
         public IEnumerable<Declaracion> GetDeclaraciones()
         {
-            return _context.Declaraciones;
+            return _context.Declaraciones.Include(d => d.Gasolinas);
         }
 
         // GET: api/Declaraciones/5

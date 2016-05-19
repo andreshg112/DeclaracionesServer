@@ -8,8 +8,8 @@ using DeclaracionesServer.Models;
 namespace DeclaracionesServer.Migrations.DeclaracionDb
 {
     [DbContext(typeof(DeclaracionDbContext))]
-    [Migration("20160513042800_ParametrosDecs")]
-    partial class ParametrosDecs
+    [Migration("20160514143033_AgregoGasolinasAlContext")]
+    partial class AgregoGasolinasAlContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,6 +59,35 @@ namespace DeclaracionesServer.Migrations.DeclaracionDb
                     b.Property<string>("tipo_documento");
 
                     b.HasKey("DeclaracionId");
+                });
+
+            modelBuilder.Entity("DeclaracionesServer.Models.Gasolina", b =>
+                {
+                    b.Property<int>("GasolinaId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("DeclaracionId");
+
+                    b.Property<float>("base_gravable");
+
+                    b.Property<string>("clase");
+
+                    b.Property<float>("galones_gravado");
+
+                    b.Property<float>("porcentaje_alcohol");
+
+                    b.Property<float>("precio_referencia");
+
+                    b.Property<float>("sobretasa");
+
+                    b.HasKey("GasolinaId");
+                });
+
+            modelBuilder.Entity("DeclaracionesServer.Models.Gasolina", b =>
+                {
+                    b.HasOne("DeclaracionesServer.Models.Declaracion")
+                        .WithMany()
+                        .HasForeignKey("DeclaracionId");
                 });
         }
     }

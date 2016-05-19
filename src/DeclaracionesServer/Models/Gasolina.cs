@@ -14,7 +14,8 @@ namespace DeclaracionesServer.Models
         public float porcentaje_alcohol { get; set; }
         public float base_gravable { get; set; }
         public float sobretasa { get; set; }
+
         public int DeclaracionId { get; set; }
-        public Declaracion Declaracion { get; set; }
+        //public virtual Declaracion Declaracion { get; set; }
     }
 }

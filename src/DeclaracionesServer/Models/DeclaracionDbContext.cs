@@ -9,6 +9,7 @@ namespace DeclaracionesServer.Models
     public class DeclaracionDbContext : DbContext
     {
         public DbSet<Declaracion> Declaraciones { get; set; }
+        public DbSet<Gasolina> Gasolinas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

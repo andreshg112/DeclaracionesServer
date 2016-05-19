@@ -27,6 +27,6 @@ namespace DeclaracionesServer.Models
         public string municipio { get; set; }
         public string telefono { get; set; }
 
-        public List<Gasolina> Gasolinas { get; set; }
+        public virtual List<Gasolina> Gasolinas { get; set; }
     }
 }
